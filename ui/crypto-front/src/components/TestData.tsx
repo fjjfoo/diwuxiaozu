@@ -32,11 +32,11 @@ const TestData = () => {
       const res = await batchSaveCrypto(testData);
       message.success(res.data.message);
       form.resetFields();
-    } catch (error: any) {
+    } catch (error: unknown) {
       // 显示后端返回的详细错误信息
-      const errorMsg = error.response?.data?.message || error.message || '数据推送失败';
+      const errorMsg = (error as { response?: { data?: { message?: string } }; message?: string }).response?.data?.message || (error as { message?: string }).message || '数据推送失败';
       message.error(errorMsg);
-      console.error('推送失败：', error.response?.data || error);
+      console.error('推送失败：', (error as { response?: { data?: unknown } }).response?.data || error);
     } finally {
       setLoading(false);
     }
@@ -44,7 +44,7 @@ const TestData = () => {
 
   return (
     <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-      <Card title="模拟Dify推送测试数据" bordered={false}>
+      <Card title="模拟Dify推送测试数据" variant="outlined">
         <Form form={form} layout="vertical">
           <Form.Item 
             label="货币符号" 

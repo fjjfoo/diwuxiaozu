@@ -1,126 +1,108 @@
-import { useEffect, useState } from 'react';
-import { Table, Typography, Spin, Card, Space, Tag, Alert } from 'antd';
-import { DollarOutlined, ClockCircleOutlined, TagOutlined, WarningOutlined } from '@ant-design/icons';
-import { getCryptoList } from './api/crypto';
-import { type CryptoCurrency } from './types/crypto';
-import 'antd/dist/reset.css';
+import { ConfigProvider, Layout, Menu } from 'antd';
+import zhCN from 'antd/locale/zh_CN';
+import { Route, Routes, Link, useLocation } from 'react-router-dom';
+import { DashboardOutlined, MessageOutlined, DollarOutlined, FileTextOutlined } from '@ant-design/icons';
+import Dashboard from './pages/Dashboard';
+import MessageList from './pages/MessageList';
+import PortfolioPage from './pages/PortfolioPage';
+import ReportList from './pages/ReportList';
+import './App.css';
 
-const { Title, Text } = Typography;
+const { Header, Content, Sider } = Layout;
 
-const App = () => {
-  const [cryptoList, setCryptoList] = useState<CryptoCurrency[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null); // 错误状态
+function App() {
+  const location = useLocation();
 
-  // 加载数据（优化错误捕获）
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      setError(null); // 重置错误状态
-      const res = await getCryptoList();
-      setCryptoList(res.data);
-    } catch (err) {
-      setError('数据加载失败，请检查：1.后端服务是否启动 2.数据库连接是否正常 3.接口地址是否正确');
-      console.error('加载失败：', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 初始化加载 + 5分钟定时刷新
-  useEffect(() => {
-    fetchData();
-    const timer = setInterval(fetchData, 5 * 60 * 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  // 表格列配置
-  const columns = [
+  // 菜单项配置
+  const menuItems = [
     {
-      title: (
-        <Space>
-          <TagOutlined />
-          <Text>货币符号</Text>
-        </Space>
-      ),
-      dataIndex: 'symbol',
-      key: 'symbol',
-      width: 120,
-      render: (symbol: string) => <Tag color="blue">{symbol}</Tag>,
+      key: '/',
+      icon: <DashboardOutlined />,
+      label: <Link to="/">系统概览</Link>,
     },
     {
-      title: '货币名称',
-      dataIndex: 'name',
-      key: 'name',
-      width: 150,
+      key: '/messages',
+      icon: <MessageOutlined />,
+      label: <Link to="/messages">消息列表</Link>,
     },
     {
-      title: (
-        <Space>
-          <DollarOutlined />
-          <Text>美元价格</Text>
-        </Space>
-      ),
-      dataIndex: 'usdPrice',
-      key: 'usdPrice',
-      render: (price: string) => {
-        const num = Number(price);
-        return `$${num.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 8,
-        })}`;
-      },
+      key: '/portfolio',
+      icon: <DollarOutlined />,
+      label: <Link to="/portfolio">持仓数据</Link>,
     },
     {
-      title: (
-        <Space>
-          <ClockCircleOutlined />
-          <Text>更新时间</Text>
-        </Space>
-      ),
-      dataIndex: 'updateTime',
-      key: 'updateTime',
-      render: (time: string) => new Date(time).toLocaleString('zh-CN'),
+      key: '/reports',
+      icon: <FileTextOutlined />,
+      label: <Link to="/reports">建议报告</Link>,
     },
   ];
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      <Card
-        title={
-          <Title level={2} style={{ textAlign: 'center', margin: 0 }}>
-            虚拟货币价格实时展示（BigDecimal精度版）
-          </Title>
-        }
-        bordered={false}
-        style={{ boxShadow: '0 2px 12px 0 rgba(0, 0, 0, 0.1)' }}
-      >
-        {/* 错误提示 */}
-        {error && (
-          <Alert
-            message="加载失败"
-            description={error}
-            type="error"
-            showIcon
-            icon={<WarningOutlined />}
-            style={{ marginBottom: '16px' }}
+    <ConfigProvider
+      locale={zhCN}
+      theme={{
+        token: {
+          colorPrimary: '#1677FF',
+          borderRadius: 4,
+        },
+      }}
+    >
+      <Layout style={{ minHeight: '100vh' }}>
+        <Sider
+          breakpoint="lg"
+          collapsedWidth="0"
+          onBreakpoint={(broken) => {
+            console.log(broken);
+          }}
+          onCollapse={(collapsed, type) => {
+            console.log(collapsed, type);
+          }}
+        >
+          <div className="logo" style={{ 
+            height: 32, 
+            margin: 16, 
+            background: 'rgba(255, 255, 255, 0.2)',
+            textAlign: 'center',
+            lineHeight: '32px',
+            color: '#fff',
+            fontWeight: 'bold'
+          }}>
+            AI投资助手
+          </div>
+          <Menu
+            theme="dark"
+            mode="inline"
+            selectedKeys={[location.pathname]}
+            items={menuItems}
           />
-        )}
-
-        {/* 加载状态 + 表格 */}
-        <Spin spinning={loading} tip="正在加载数据（若长时间无响应，请检查后端服务）...">
-          <Table
-            columns={columns}
-            dataSource={cryptoList}
-            rowKey="symbol"
-            pagination={cryptoList.length > 10 ? { pageSize: 10 } : false}
-            scroll={{ x: 'max-content' }}
-            locale={{ emptyText: '暂无数据，请先通过Dify或测试组件推送数据' }}
-          />
-        </Spin>
-      </Card>
-    </div>
+        </Sider>
+        <Layout>
+          <Header style={{ 
+            background: '#fff',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '0 24px'
+          }}>
+            <div style={{ fontSize: 20, fontWeight: 'bold', color: '#1677FF' }}>
+              AI驱动数字货币投资辅助系统
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <span>管理员</span>
+            </div>
+          </Header>
+          <Content style={{ margin: '16px' }}>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/messages" element={<MessageList />} />
+              <Route path="/portfolio" element={<PortfolioPage />} />
+              <Route path="/reports" element={<ReportList />} />
+            </Routes>
+          </Content>
+        </Layout>
+      </Layout>
+    </ConfigProvider>
   );
-};
+}
 
 export default App;

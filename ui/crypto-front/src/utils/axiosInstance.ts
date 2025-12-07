@@ -2,7 +2,7 @@ import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse 
 
 // 创建 axios 实例
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/api/crypto', // 直接配置基础路径，避免重复写
+  baseURL: '/api', // 使用相对路径，配合vite代理配置
   timeout: 5000, // 超时时间：5秒
   headers: {
     'Content-Type': 'application/json',
