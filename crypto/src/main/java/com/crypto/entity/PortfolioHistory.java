@@ -1,10 +1,8 @@
 package com.crypto.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDate;
 
-@Data
 @Entity
 @Table(name = "portfolio_history")
 public class PortfolioHistory {
@@ -21,4 +19,45 @@ public class PortfolioHistory {
     private String cryptoType;
     
     private Double percentage;
+    
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    public LocalDate getDate() {
+        return date;
+    }
+    
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+    
+    public Double getTotalValue() {
+        return totalValue;
+    }
+    
+    public void setTotalValue(Double totalValue) {
+        this.totalValue = totalValue;
+    }
+    
+    public String getCryptoType() {
+        return cryptoType;
+    }
+    
+    public void setCryptoType(String cryptoType) {
+        this.cryptoType = cryptoType;
+    }
+    
+    public Double getPercentage() {
+        return percentage;
+    }
+    
+    public void setPercentage(Double percentage) {
+        this.percentage = percentage;
+    }
 }

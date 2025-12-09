@@ -60,7 +60,7 @@ public class MessageServiceImpl implements MessageService {
     public void markMessageAsRead(Long id) {
         Message message = messageRepository.findById(id).orElse(null);
         if (message != null) {
-            message.setIsRead(true);
+            message.setRead(true);
             messageRepository.save(message);
         }
     }
