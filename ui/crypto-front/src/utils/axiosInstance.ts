@@ -3,7 +3,7 @@ import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse 
 // 创建 axios 实例
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: '/api', // 使用相对路径，配合vite代理配置
-  timeout: 5000, // 超时时间：5秒
+  timeout: 15000, // 超时时间：15秒，解决请求超时问题
   headers: {
     'Content-Type': 'application/json',
   },

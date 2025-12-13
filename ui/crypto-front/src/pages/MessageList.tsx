@@ -21,6 +21,14 @@ interface Message {
   isRead: boolean;
 }
 
+// API响应类型定义
+interface MessagesResponse {
+  total: number;
+  pages: number;
+  current: number;
+  records: Message[];
+}
+
 const MessageList: React.FC = () => {
   // 筛选条件
   const [cryptoType, setCryptoType] = useState<string>('');
@@ -29,51 +37,20 @@ const MessageList: React.FC = () => {
   const [currentMessage, setCurrentMessage] = useState<Message | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  // 使用自定义Hook获取消息数据
-  const { data, loading, refetch } = useAxios('/api/messages', {
+  // 使用useMemo记忆化请求参数，避免每次渲染都重新创建对象
+  const requestParams = React.useMemo(() => ({
     params: {
       cryptoType,
       sentiment,
-      startDate: dateRange?.[0].format('YYYY-MM-DD'),
-      endDate: dateRange?.[1].format('YYYY-MM-DD'),
+      startDate: dateRange?.[0]?.format('YYYY-MM-DD'),
+      endDate: dateRange?.[1]?.format('YYYY-MM-DD'),
     },
-  });
+  }), [cryptoType, sentiment, dateRange]);
 
-  // 模拟数据
-  const mockMessages: Message[] = [
-    {
-      id: 1,
-      cryptoType: 'BTC',
-      content: '美联储加息预期减弱，比特币价格突破45000美元',
-      sentiment: 'positive',
-      source: 'CoinGecko',
-      sourceUrl: 'https://www.coingecko.com',
-      createdAt: '2024-01-15T10:30:00',
-      isRead: false,
-    },
-    {
-      id: 2,
-      cryptoType: 'ETH',
-      content: '以太坊上海升级顺利完成，质押解锁功能启动',
-      sentiment: 'positive',
-      source: 'Binance',
-      sourceUrl: 'https://www.binance.com',
-      createdAt: '2024-01-15T09:15:00',
-      isRead: true,
-    },
-    {
-      id: 3,
-      cryptoType: 'SOL',
-      content: 'Solana网络出现短暂拥堵，影响交易确认速度',
-      sentiment: 'negative',
-      source: 'Twitter',
-      sourceUrl: 'https://twitter.com',
-      createdAt: '2024-01-14T16:45:00',
-      isRead: false,
-    },
-  ];
+  // 使用自定义Hook获取消息数据
+  const { data, loading, refetch } = useAxios<MessagesResponse>('/messages', requestParams);
 
-  const messages = data || mockMessages;
+  const messages = data?.records || [];
 
   // 情感标签映射
   const sentimentTagMap = {

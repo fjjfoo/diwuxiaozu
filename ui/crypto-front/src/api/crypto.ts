@@ -7,7 +7,7 @@ import { type CryptoCurrency, type CryptoCurrencyRequest } from '../types/crypto
 export const getCryptoList = () => {
   return requestWithRetry<CryptoCurrency[]>({
     method: 'GET',
-    url: '/list',
+    url: '/crypto/list',
   });
 };
 
@@ -17,7 +17,7 @@ export const getCryptoList = () => {
 export const batchSaveCrypto = (data: CryptoCurrencyRequest[]) => {
   return requestWithRetry<{ code: number; message: string }>({
     method: 'POST',
-    url: '/batch-save',
+    url: '/crypto/batch-save',
     data,
   });
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Card, Typography, Space, Button, Table } from 'antd';
 import { ExportOutlined, ReloadOutlined } from '@ant-design/icons';
 import ReactECharts from 'echarts-for-react';
@@ -7,7 +7,6 @@ import dayjs from 'dayjs';
 import type { TableProps } from 'antd';
 
 const { Title, Text } = Typography;
-// const { RangePicker } = DatePicker;
 
 // 持仓数据类型定义
 interface PortfolioItem {
@@ -30,74 +29,43 @@ interface HistoricalPortfolio {
   }>;
 }
 
+// API响应类型定义
+interface CurrentPortfolioResponse {
+  totalValue: number;
+  items: PortfolioItem[];
+}
+
+// HistoricalItem接口已移除，因为在HistoricalPortfolio中已直接定义了items类型
+
+// ECharts Tooltip参数类型
+interface EChartsTooltipParam {
+  axisValue: string;
+  marker: string;
+  seriesName: string;
+  value: number;
+}
+
+
+
 const PortfolioPage: React.FC = () => {
+  // 缓存请求配置，确保引用稳定
+  const historyConfig = useMemo(() => ({
+    params: { days: 7 },
+  }), []);
+
   // 使用自定义Hook获取当前持仓数据
-  const { data: currentData, loading: currentLoading, refetch: refetchCurrent } = useAxios('/api/portfolio/current');
+  const { data: currentData, loading: currentLoading, refetch: refetchCurrent } = useAxios<CurrentPortfolioResponse>('portfolio/current');
 
   // 使用自定义Hook获取历史持仓数据
-  const { data: historyData, loading: historyLoading, refetch: refetchHistory } = useAxios('/api/portfolio/history', {
-    params: {
-      days: 7,
-    },
-  });
+  const { data: historyData, loading: historyLoading, refetch: refetchHistory } = useAxios<HistoricalPortfolio[]>('portfolio/history', historyConfig);
 
-  // 模拟当前持仓数据
-  const mockCurrentPortfolio: PortfolioItem[] = [
-    {
-      id: 1,
-      cryptoType: 'BTC',
-      amount: 15.2,
-      price: 45000,
-      value: 684000,
-      percentage: 42.75,
-      updatedAt: '2024-01-15T10:00:00',
-    },
-    {
-      id: 2,
-      cryptoType: 'ETH',
-      amount: 520.5,
-      price: 2300,
-      value: 1197150,
-      percentage: 32.81,
-      updatedAt: '2024-01-15T10:00:00',
-    },
-    {
-      id: 3,
-      cryptoType: 'SOL',
-      amount: 3500,
-      price: 85,
-      value: 297500,
-      percentage: 18.59,
-      updatedAt: '2024-01-15T10:00:00',
-    },
-    {
-      id: 4,
-      cryptoType: 'USDT',
-      amount: 100000,
-      price: 1,
-      value: 100000,
-      percentage: 5.85,
-      updatedAt: '2024-01-15T10:00:00',
-    },
-  ];
-
-  // 模拟历史持仓数据
-  const mockHistoricalData: HistoricalPortfolio[] = [
-    { date: '2024-01-09', totalValue: 1020000, items: [{ cryptoType: 'BTC', percentage: 40 }, { cryptoType: 'ETH', percentage: 35 }, { cryptoType: 'SOL', percentage: 15 }, { cryptoType: 'USDT', percentage: 10 }] },
-    { date: '2024-01-10', totalValue: 1035000, items: [{ cryptoType: 'BTC', percentage: 40.5 }, { cryptoType: 'ETH', percentage: 34.8 }, { cryptoType: 'SOL', percentage: 15.2 }, { cryptoType: 'USDT', percentage: 9.5 }] },
-    { date: '2024-01-11', totalValue: 1042000, items: [{ cryptoType: 'BTC', percentage: 41 }, { cryptoType: 'ETH', percentage: 34.5 }, { cryptoType: 'SOL', percentage: 15.5 }, { cryptoType: 'USDT', percentage: 9 }] },
-    { date: '2024-01-12', totalValue: 1038000, items: [{ cryptoType: 'BTC', percentage: 41.5 }, { cryptoType: 'ETH', percentage: 34.2 }, { cryptoType: 'SOL', percentage: 15.8 }, { cryptoType: 'USDT', percentage: 8.5 }] },
-    { date: '2024-01-13', totalValue: 1045000, items: [{ cryptoType: 'BTC', percentage: 42 }, { cryptoType: 'ETH', percentage: 33.8 }, { cryptoType: 'SOL', percentage: 16.2 }, { cryptoType: 'USDT', percentage: 8 }] },
-    { date: '2024-01-14', totalValue: 1050000, items: [{ cryptoType: 'BTC', percentage: 42.5 }, { cryptoType: 'ETH', percentage: 33.5 }, { cryptoType: 'SOL', percentage: 17 }, { cryptoType: 'USDT', percentage: 7 }] },
-    { date: '2024-01-15', totalValue: 1060000, items: [{ cryptoType: 'BTC', percentage: 42.75 }, { cryptoType: 'ETH', percentage: 32.81 }, { cryptoType: 'SOL', percentage: 18.59 }, { cryptoType: 'USDT', percentage: 5.85 }] },
-  ];
-
-  const currentPortfolio = currentData?.items || mockCurrentPortfolio;
-  const historicalPortfolio = historyData?.data || mockHistoricalData;
-  const totalValue = currentPortfolio.reduce((sum: number, item: PortfolioItem) => sum + item.value, 0);
+  // 使用useMemo确保引用稳定，避免不必要的重新渲染
+  const currentPortfolio = useMemo(() => currentData?.items || [], [currentData]);
+  const historicalPortfolio = useMemo(() => historyData || [], [historyData]);
+  const totalValue = useMemo(() => currentData?.totalValue || 0, [currentData]);
 
   // 饼图配置
-  const pieChartOption = {
+  const pieChartOption = useMemo(() => ({
     title: {
       text: '当前资产配置',
       left: 'center',
@@ -145,10 +113,10 @@ const PortfolioPage: React.FC = () => {
         })),
       },
     ],
-  };
+  }), [currentPortfolio]);
 
   // 折线图配置
-  const lineChartOption = {
+  const lineChartOption = useMemo(() => ({
     title: {
       text: '近7日总资产变化',
       left: 'center',
@@ -158,9 +126,9 @@ const PortfolioPage: React.FC = () => {
     },
     tooltip: {
       trigger: 'axis',
-      formatter: (params: any) => {
+      formatter: (params: EChartsTooltipParam[]) => {
         let result = params[0].axisValue + '<br/>';
-        params.forEach((param: any) => {
+        params.forEach((param: EChartsTooltipParam) => {
           result += `${param.marker}${param.seriesName}: $${param.value.toLocaleString()}<br/>`;
         });
         return result;
@@ -212,10 +180,10 @@ const PortfolioPage: React.FC = () => {
         },
       },
     ],
-  };
+  }), [historicalPortfolio]);
 
-  // 表格列配置
-  const columns: TableProps<PortfolioItem>['columns'] = [
+  // 缓存表格列配置，避免每次渲染重建
+  const columns = useMemo<TableProps<PortfolioItem>['columns']>(() => [
     {
       title: '数字货币',
       dataIndex: 'cryptoType',
@@ -253,7 +221,7 @@ const PortfolioPage: React.FC = () => {
       key: 'updatedAt',
       render: (date) => dayjs(date).format('YYYY-MM-DD HH:mm:ss'),
     },
-  ];
+  ], []);
 
   // 导出数据功能
   const handleExport = () => {
@@ -312,11 +280,11 @@ const PortfolioPage: React.FC = () => {
         {/* 当前持仓表格 */}
         <Card title="当前持仓明细">
           <Table
-              columns={columns}
-              dataSource={currentPortfolio.map((item: PortfolioItem) => ({ ...item, key: item.id }))}
-              pagination={false}
-              loading={currentLoading}
-            />
+            columns={columns}
+            dataSource={currentPortfolio.map((item: PortfolioItem) => ({ ...item, key: item.id }))}
+            pagination={false}
+            loading={currentLoading}
+          />
         </Card>
       </Space>
     </div>

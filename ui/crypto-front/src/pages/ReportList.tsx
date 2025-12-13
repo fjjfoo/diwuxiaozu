@@ -46,113 +46,32 @@ interface ReportDetail extends Report {
   };
 }
 
+// API响应类型定义
+interface ReportsResponse {
+  total: number;
+  pages: number;
+  current: number;
+  records: Report[];
+}
+
+// ReportDetailResponse接口已移除，直接使用ReportDetail类型
+
 const ReportList: React.FC = () => {
   // 使用自定义Hook获取报告列表数据
-  const { data: reportData, loading: reportLoading, refetch: refetchReports } = useAxios('/api/reports');
+  const { data: reportData, loading: reportLoading, refetch: refetchReports } = useAxios<ReportsResponse>('/reports');
+  
+  // 使用自定义Hook获取报告详情数据，只保留refetch方法
+  const { data: reportDetailData, refetch: refetchReportDetail } = useAxios<ReportDetail>('/reports/1', { manual: true });
 
   // 报告详情相关状态
   const [currentReport, setCurrentReport] = useState<ReportDetail | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  // 模拟报告列表数据
-  const mockReports: Report[] = [
-    {
-      id: 1,
-      reportDate: '2024-01-15',
-      status: 'pending',
-      aiAgentId: 'agent-001',
-      generatedAt: '2024-01-15T09:30:00',
-    },
-    {
-      id: 2,
-      reportDate: '2024-01-14',
-      status: 'approved',
-      aiAgentId: 'agent-001',
-      generatedAt: '2024-01-14T09:30:00',
-      reviewedBy: 'admin',
-      reviewedAt: '2024-01-14T11:20:00',
-    },
-    {
-      id: 3,
-      reportDate: '2024-01-13',
-      status: 'rejected',
-      aiAgentId: 'agent-001',
-      generatedAt: '2024-01-13T09:30:00',
-      reviewedBy: 'admin',
-      reviewedAt: '2024-01-13T10:45:00',
-      rejectionReason: '建议调整幅度过大，需要重新评估',
-    },
-  ];
 
-  // 模拟报告详情数据
-  const mockReportDetail: ReportDetail = {
-    id: 1,
-    reportDate: '2024-01-15',
-    status: 'pending',
-    aiAgentId: 'agent-001',
-    generatedAt: '2024-01-15T09:30:00',
-    messageAnalysis: [
-      {
-        messageId: 1,
-        cryptoType: 'BTC',
-        sentiment: 'positive',
-        content: '美联储加息预期减弱，比特币价格突破45000美元',
-        impact: '短期利好，预计价格将继续上涨',
-      },
-      {
-        messageId: 2,
-        cryptoType: 'ETH',
-        sentiment: 'positive',
-        content: '以太坊上海升级顺利完成，质押解锁功能启动',
-        impact: '长期利好，提高网络安全性和去中心化程度',
-      },
-      {
-        messageId: 3,
-        cryptoType: 'SOL',
-        sentiment: 'negative',
-        content: 'Solana网络出现短暂拥堵，影响交易确认速度',
-        impact: '短期利空，可能影响投资者信心',
-      },
-    ],
-    portfolioSnapshot: [
-      { cryptoType: 'BTC', amount: 15.2, percentage: 42.75, value: 684000 },
-      { cryptoType: 'ETH', amount: 520.5, percentage: 32.81, value: 1197150 },
-      { cryptoType: 'SOL', amount: 3500, percentage: 18.59, value: 297500 },
-      { cryptoType: 'USDT', amount: 100000, percentage: 5.85, value: 100000 },
-    ],
-    recommendation: {
-      overallAssessment: '当前持仓配置基本合理，但可根据市场消息进行微调，以优化收益并降低风险',
-      adjustments: [
-        {
-          cryptoType: 'BTC',
-          currentPercentage: 42.75,
-          recommendedPercentage: 45,
-          reason: '受美联储加息预期减弱影响，比特币价格有望继续上涨，建议适当增加配置',
-        },
-        {
-          cryptoType: 'ETH',
-          currentPercentage: 32.81,
-          recommendedPercentage: 30,
-          reason: '以太坊长期前景良好，但短期涨幅可能有限，建议略微降低配置',
-        },
-        {
-          cryptoType: 'SOL',
-          currentPercentage: 18.59,
-          recommendedPercentage: 15,
-          reason: 'Solana网络稳定性问题可能影响短期表现，建议降低配置以控制风险',
-        },
-        {
-          cryptoType: 'USDT',
-          currentPercentage: 5.85,
-          recommendedPercentage: 10,
-          reason: '保留足够的稳定币以应对市场波动，提高资金灵活性',
-        },
-      ],
-      conclusion: '建议根据上述调整方案更新持仓配置，以适应当前市场环境并优化投资组合表现。调整后应密切关注市场动态，及时进行再平衡。',
-    },
-  };
 
-  const reports = reportData?.data || mockReports;
+
+
+  const reports = reportData?.records || [];
 
   // 状态标签映射
   const statusTagMap = {
@@ -236,7 +155,7 @@ const ReportList: React.FC = () => {
                 type="primary"
                 icon={<CheckOutlined />}
                 size="small"
-                onClick={() => handleApprove(record.id)}
+                onClick={() => handleApprove()}
               >
                 通过
               </Button>
@@ -245,7 +164,7 @@ const ReportList: React.FC = () => {
                 danger
                 icon={<CloseOutlined />}
                 size="small"
-                onClick={() => handleReject(record.id)}
+                onClick={() => handleReject()}
               >
                 驳回
               </Button>
@@ -257,15 +176,21 @@ const ReportList: React.FC = () => {
   ];
 
   // 查看报告详情
-  const handleViewDetail = (_reportId: number) => {
-    // 实际项目中会调用API获取报告详情
-    // 这里使用模拟数据
-    setCurrentReport(mockReportDetail);
-    setModalVisible(true);
+  const handleViewDetail = async (reportId: number) => {
+    try {
+      await refetchReportDetail(`/reports/${reportId}`);
+      // refetchReportDetail会自动更新reportDetailData
+      if (reportDetailData) {
+        setCurrentReport(reportDetailData);
+        setModalVisible(true);
+      }
+    } catch {
+      message.error('获取报告详情失败');
+    }
   };
 
   // 审批报告
-  const handleApprove = (_reportId: number) => {
+  const handleApprove = () => {
     // 实际项目中会调用API审批报告
     Modal.confirm({
       title: '确认审批',
@@ -276,7 +201,7 @@ const ReportList: React.FC = () => {
           await new Promise((resolve) => setTimeout(resolve, 1000));
           message.success('报告审批通过');
           refetchReports();
-        } catch (error) {
+        } catch {
           message.error('审批失败，请重试');
         }
       },
@@ -284,7 +209,7 @@ const ReportList: React.FC = () => {
   };
 
   // 驳回报告
-  const handleReject = (_reportId: number) => {
+  const handleReject = () => {
     // 实际项目中会调用API驳回报告
     Modal.confirm({
       title: '确认驳回',
@@ -295,7 +220,7 @@ const ReportList: React.FC = () => {
           await new Promise((resolve) => setTimeout(resolve, 1000));
           message.success('报告已驳回');
           refetchReports();
-        } catch (error) {
+        } catch {
           message.error('驳回失败，请重试');
         }
       },

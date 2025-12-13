@@ -18,7 +18,7 @@ export default defineConfig({
     // 配置代理，将/api请求转发到后端服务器
     proxy: {
       '/api': {
-        target: 'http://localhost:8081',
+        target: 'http://localhost:8082',
         changeOrigin: true,
       },
     },
