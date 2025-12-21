@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Statistic, Row, Col, Button, Typography, Space, Divider } from 'antd';
-import { ArrowRightOutlined, BellOutlined, FileTextOutlined, DollarCircleOutlined, BarChartOutlined } from '@ant-design/icons';
+import { ArrowRightOutlined, BellOutlined, FileTextOutlined, DollarCircleOutlined, BarChartOutlined, FireOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { getSystemOverview } from '../api/system';
 import type { SystemOverview } from '../types/system';
@@ -152,6 +152,21 @@ const Dashboard: React.FC = () => {
                   <Title level={4}>价格排行</Title>
                   <Text type="secondary">实时查看数字货币价格排名</Text>
                   <Link to="/rankings">
+                    <Button type="primary" size="small">
+                      查看
+                    </Button>
+                  </Link>
+                </Space>
+              </Card>
+            </Col>
+
+            <Col xs={24} sm={12} md={6}>
+              <Card hoverable bodyStyle={{ textAlign: 'center' }}>
+                <Space direction="vertical" size="middle">
+                  <FireOutlined style={{ fontSize: '48px', color: '#fa541c' }} />
+                  <Title level={4}>热门货币</Title>
+                  <Text type="secondary">查看热门加密货币行情</Text>
+                  <Link to="/hot-crypto">
                     <Button type="primary" size="small">
                       查看
                     </Button>

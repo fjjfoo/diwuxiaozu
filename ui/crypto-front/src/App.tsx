@@ -1,13 +1,18 @@
 import { ConfigProvider, Layout, Menu } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import { Route, Routes, Link, useLocation } from 'react-router-dom';
-import { DashboardOutlined, MessageOutlined, DollarOutlined, FileTextOutlined, BarChartOutlined, LineChartOutlined } from '@ant-design/icons';
+import { DashboardOutlined, MessageOutlined, DollarOutlined, FileTextOutlined, BarChartOutlined, FireOutlined } from '@ant-design/icons';
 import Dashboard from './pages/Dashboard';
 import MessageList from './pages/MessageList';
 import PortfolioPage from './pages/PortfolioPage';
 import ReportList from './pages/ReportList';
 import PriceRankings from './pages/PriceRankings';
+<<<<<<< HEAD
 import MarketTrends from './pages/MarketTrends';
+import CryptoDetail from './pages/CryptoDetail';
+=======
+import HotCryptoPage from './pages/HotCryptoPage';
+>>>>>>> 9b5fe69fb3403253462af3a437ece88ed8b53a39
 import './App.css';
 
 const { Header, Content, Sider } = Layout;
@@ -38,9 +43,9 @@ function App() {
       label: <Link to="/rankings">价格排行</Link>,
     },
     {
-      key: '/trends',
-      icon: <LineChartOutlined />,
-      label: <Link to="/trends">市场趋势</Link>,
+      key: '/hot-crypto',
+      icon: <FireOutlined />,
+      label: <Link to="/hot-crypto">热门货币</Link>,
     },
     {
       key: '/reports',
@@ -105,13 +110,24 @@ function App() {
           </Header>
           <Content style={{ margin: '16px' }}>
             <Routes>
+<<<<<<< HEAD
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/messages" element={<MessageList />} />
+            <Route path="/portfolio" element={<PortfolioPage />} />
+            <Route path="/rankings" element={<PriceRankings />} />
+            <Route path="/trends" element={<MarketTrends />} />
+            <Route path="/reports" element={<ReportList />} />
+            <Route path="/crypto/:id" element={<CryptoDetail />} />
+          </Routes>
+=======
               <Route path="/" element={<Dashboard />} />
               <Route path="/messages" element={<MessageList />} />
               <Route path="/portfolio" element={<PortfolioPage />} />
               <Route path="/rankings" element={<PriceRankings />} />
-              <Route path="/trends" element={<MarketTrends />} />
+              <Route path="/hot-crypto" element={<HotCryptoPage />} />
               <Route path="/reports" element={<ReportList />} />
             </Routes>
+>>>>>>> 9b5fe69fb3403253462af3a437ece88ed8b53a39
           </Content>
         </Layout>
       </Layout>

@@ -9,6 +9,18 @@ export interface CryptoCurrency {
   volume24h?: string; // 24小时成交量
   marketCap?: string; // 市值
   updateTime: string; // 后端返回的 LocalDateTime 格式（如：2025-12-01T12:00:00）
+  // 新增字段用于详情页面
+  currentPrice?: number;
+  changeRate?: number;
+  tradingVolume?: number;
+  tradingVolume24h?: number;
+  marketCapDominance?: number;
+  circulatingSupply?: number;
+  totalSupply?: number;
+  allTimeHigh?: number;
+  allTimeLow?: number;
+  status?: 'active' | 'inactive';
+  rank?: number;
 }
 
 // 前端推送数据的类型（无需 id，新增时后端自动生成）
