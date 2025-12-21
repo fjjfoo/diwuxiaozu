@@ -38,6 +38,11 @@ function App() {
       label: <Link to="/rankings">价格排行</Link>,
     },
     {
+      key: '/trends',
+      icon: <LineChartOutlined />,
+      label: <Link to="/trends">市场趋势</Link>,
+    },
+    {
       key: '/hot-crypto',
       icon: <FireOutlined />,
       label: <Link to="/hot-crypto">热门货币</Link>,
@@ -109,6 +114,7 @@ function App() {
               <Route path="/messages" element={<MessageList />} />
               <Route path="/portfolio" element={<PortfolioPage />} />
               <Route path="/rankings" element={<PriceRankings />} />
+              <Route path="/trends" element={<MarketTrends />} />
               <Route path="/hot-crypto" element={<HotCryptoPage />} />
               <Route path="/reports" element={<ReportList />} />
             </Routes>
