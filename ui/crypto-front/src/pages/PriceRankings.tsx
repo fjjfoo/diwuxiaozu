@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from 'react';
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { Card, Table, Typography, Space, Row, Col, Button, Statistic, message } from 'antd';
-import { ReloadOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import { Card, Table, Typography, Space, Row, Col, Button, Statistic, message, Input, Select, Empty, type TableProps } from 'antd';
+import { ReloadOutlined, ArrowUpOutlined, ArrowDownOutlined, SearchOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-=======
-import { Card, Table, Typography, Space, Row, Col, Button, Statistic, message, Input, Select, Empty, type TableProps } from 'antd';
-import { ReloadOutlined, ArrowUpOutlined, ArrowDownOutlined, SearchOutlined } from '@ant-design/icons';
->>>>>>> 9b5fe69fb3403253462af3a437ece88ed8b53a39
-=======
-import { Card, Table, Typography, Space, Row, Col, Button, Statistic, message, Input, Select, Empty, type TableProps } from 'antd';
-import { ReloadOutlined, ArrowUpOutlined, ArrowDownOutlined, SearchOutlined } from '@ant-design/icons';
->>>>>>> e93483f43c855700871d311b06816e1c03f1934b
 import { getCryptoList } from '../api/crypto';
 import type { CryptoCurrency } from '../types/crypto';
 
@@ -119,53 +109,29 @@ const PriceRankings: React.FC = () => {
       title: '名称',
       key: 'name',
       render: (_: React.ReactNode, record: CryptoCurrency) => (
-<<<<<<< HEAD
-<<<<<<< HEAD
         <Link to={`/crypto/${record.id}`} style={{ color: '#1677ff' }}>
-          <Space>
+          <Space size="middle">
             <div style={{ 
-              width: 32, 
-              height: 32, 
-              borderRadius: 8, 
-              background: '#f0f0f0', 
+              width: 36, 
+              height: 36, 
+              borderRadius: 999,
+              background: `linear-gradient(135deg, #667eea 0%, #764ba2 100%)`, 
               display: 'flex', 
               alignItems: 'center', 
               justifyContent: 'center',
-              fontWeight: 'bold'
+              color: '#fff',
+              fontWeight: 'bold',
+              fontSize: '14px',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
             }}>
-              {record.symbol.substring(0, 2)}
+              {record.symbol.substring(0, 2).toUpperCase()}
             </div>
             <div>
-              <div style={{ fontWeight: 'bold' }}>{record.name}</div>
-              <div style={{ fontSize: '12px', color: '#666' }}>{record.symbol}</div>
+              <div style={{ fontWeight: 'bold', fontSize: '14px' }}>{record.name}</div>
+              <div style={{ fontSize: '12px', color: '#666' }}>{record.symbol.toUpperCase()}</div>
             </div>
           </Space>
         </Link>
-=======
-=======
->>>>>>> e93483f43c855700871d311b06816e1c03f1934b
-        <Space size="middle">
-          <div style={{ 
-            width: 36, 
-            height: 36, 
-            borderRadius: 999,
-            background: `linear-gradient(135deg, #667eea 0%, #764ba2 100%)`, 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            color: '#fff',
-            fontWeight: 'bold',
-            fontSize: '14px',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
-          }}>
-            {record.symbol.substring(0, 2).toUpperCase()}
-          </div>
-          <div>
-            <div style={{ fontWeight: 'bold', fontSize: '14px' }}>{record.name}</div>
-            <div style={{ fontSize: '12px', color: '#666' }}>{record.symbol.toUpperCase()}</div>
-          </div>
-        </Space>
->>>>>>> 9b5fe69fb3403253462af3a437ece88ed8b53a39
       ),
       width: 180,
     },
