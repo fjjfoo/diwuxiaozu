@@ -8,11 +8,15 @@ import PortfolioPage from './pages/PortfolioPage';
 import ReportList from './pages/ReportList';
 import PriceRankings from './pages/PriceRankings';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import MarketTrends from './pages/MarketTrends';
 import CryptoDetail from './pages/CryptoDetail';
 =======
 import HotCryptoPage from './pages/HotCryptoPage';
 >>>>>>> 9b5fe69fb3403253462af3a437ece88ed8b53a39
+=======
+import HotCryptoPage from './pages/HotCryptoPage';
+>>>>>>> e93483f43c855700871d311b06816e1c03f1934b
 import './App.css';
 
 const { Header, Content, Sider } = Layout;
@@ -41,6 +45,11 @@ function App() {
       key: '/rankings',
       icon: <BarChartOutlined />,
       label: <Link to="/rankings">价格排行</Link>,
+    },
+    {
+      key: '/hot-crypto',
+      icon: <FireOutlined />,
+      label: <Link to="/hot-crypto">热门货币</Link>,
     },
     {
       key: '/hot-crypto',
@@ -124,6 +133,10 @@ function App() {
               <Route path="/messages" element={<MessageList />} />
               <Route path="/portfolio" element={<PortfolioPage />} />
               <Route path="/rankings" element={<PriceRankings />} />
+<<<<<<< HEAD
+=======
+              <Route path="/trends" element={<MarketTrends />} />
+>>>>>>> e93483f43c855700871d311b06816e1c03f1934b
               <Route path="/hot-crypto" element={<HotCryptoPage />} />
               <Route path="/reports" element={<ReportList />} />
             </Routes>

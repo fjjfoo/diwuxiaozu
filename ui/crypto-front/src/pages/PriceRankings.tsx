@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Card, Table, Typography, Space, Row, Col, Button, Statistic, message } from 'antd';
 import { ReloadOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
@@ -7,6 +8,10 @@ import { Link } from 'react-router-dom';
 import { Card, Table, Typography, Space, Row, Col, Button, Statistic, message, Input, Select, Empty, type TableProps } from 'antd';
 import { ReloadOutlined, ArrowUpOutlined, ArrowDownOutlined, SearchOutlined } from '@ant-design/icons';
 >>>>>>> 9b5fe69fb3403253462af3a437ece88ed8b53a39
+=======
+import { Card, Table, Typography, Space, Row, Col, Button, Statistic, message, Input, Select, Empty, type TableProps } from 'antd';
+import { ReloadOutlined, ArrowUpOutlined, ArrowDownOutlined, SearchOutlined } from '@ant-design/icons';
+>>>>>>> e93483f43c855700871d311b06816e1c03f1934b
 import { getCryptoList } from '../api/crypto';
 import type { CryptoCurrency } from '../types/crypto';
 
@@ -115,6 +120,7 @@ const PriceRankings: React.FC = () => {
       key: 'name',
       render: (_: React.ReactNode, record: CryptoCurrency) => (
 <<<<<<< HEAD
+<<<<<<< HEAD
         <Link to={`/crypto/${record.id}`} style={{ color: '#1677ff' }}>
           <Space>
             <div style={{ 
@@ -136,6 +142,8 @@ const PriceRankings: React.FC = () => {
           </Space>
         </Link>
 =======
+=======
+>>>>>>> e93483f43c855700871d311b06816e1c03f1934b
         <Space size="middle">
           <div style={{ 
             width: 36, 
