@@ -1,7 +1,7 @@
 import { ConfigProvider, Layout, Menu } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import { Route, Routes, Link, useLocation } from 'react-router-dom';
-import { DashboardOutlined, MessageOutlined, DollarOutlined, FileTextOutlined, BarChartOutlined, FireOutlined } from '@ant-design/icons';
+import { DashboardOutlined, MessageOutlined, DollarOutlined, FileTextOutlined, BarChartOutlined, FireOutlined, ExperimentOutlined } from '@ant-design/icons';
 import Dashboard from './pages/Dashboard';
 import MessageList from './pages/MessageList';
 import PortfolioPage from './pages/PortfolioPage';
@@ -10,6 +10,7 @@ import PriceRankings from './pages/PriceRankings';
 import MarketTrends from './pages/MarketTrends';
 import CryptoDetail from './pages/CryptoDetail';
 import HotCryptoPage from './pages/HotCryptoPage';
+import SimulatedTrade from './pages/SimulatedTrade';
 import './App.css';
 
 const { Header, Content, Sider } = Layout;
@@ -53,6 +54,11 @@ function App() {
       key: '/reports',
       icon: <FileTextOutlined />,
       label: <Link to="/reports">建议报告</Link>,
+    },
+    {
+      key: '/simulated-trade',
+      icon: <ExperimentOutlined />,
+      label: <Link to="/simulated-trade">模拟交易</Link>,
     },
   ];
 
@@ -119,6 +125,7 @@ function App() {
               <Route path="/trends" element={<MarketTrends />} />
               <Route path="/hot-crypto" element={<HotCryptoPage />} />
               <Route path="/reports" element={<ReportList />} />
+              <Route path="/simulated-trade" element={<SimulatedTrade />} />
               <Route path="/crypto/:id" element={<CryptoDetail />} />
             </Routes>
           </Content>

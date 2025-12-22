@@ -1,4 +1,5 @@
-import { requestWithRetry } from '../utils/axiosInstance';
+// requestWithRetry 保留用于后端接口可用时启用
+// import { requestWithRetry } from '../utils/axiosInstance';
 import type { HotCrypto, HotCryptoRequest, HotCryptoResponse } from '../types/hotCrypto';
 
 // 模拟数据
