@@ -63,6 +63,12 @@ const SimulatedTrade: React.FC = () => {
   const [orderLoading, setOrderLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('pending');
 
+  // 分页状态
+  const [positionPageSize, setPositionPageSize] = useState(5);
+  const [pendingOrderPageSize, setPendingOrderPageSize] = useState(5);
+  const [completedOrderPageSize, setCompletedOrderPageSize] = useState(5);
+  const [tradeRecordPageSize, setTradeRecordPageSize] = useState(10);
+
   // 交易表单
   const [form] = Form.useForm();
   const [tradeDirection, setTradeDirection] = useState<TradeDirection>('buy');
@@ -169,6 +175,7 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'cryptoType',
       key: 'cryptoType',
       width: 100,
+      sorter: (a, b) => a.cryptoType.localeCompare(b.cryptoType),
       render: (text) => <Text strong>{text}</Text>,
     },
     {
@@ -176,6 +183,7 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'amount',
       key: 'amount',
       width: 120,
+      sorter: (a, b) => a.amount - b.amount,
       render: (amount) => amount.toFixed(4),
     },
     {
@@ -183,6 +191,7 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'avgPrice',
       key: 'avgPrice',
       width: 120,
+      sorter: (a, b) => a.avgPrice - b.avgPrice,
       render: (price) => `$${price.toLocaleString()}`,
     },
     {
@@ -190,6 +199,7 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'currentPrice',
       key: 'currentPrice',
       width: 120,
+      sorter: (a, b) => a.currentPrice - b.currentPrice,
       render: (price) => `$${price.toLocaleString()}`,
     },
     {
@@ -197,6 +207,7 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'value',
       key: 'value',
       width: 120,
+      sorter: (a, b) => a.value - b.value,
       render: (value) => `$${value.toLocaleString()}`,
     },
     {
@@ -204,6 +215,7 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'profitLoss',
       key: 'profitLoss',
       width: 150,
+      sorter: (a, b) => a.profitLoss - b.profitLoss,
       render: (pl, record) => (
         <Space>
           <Text type={pl >= 0 ? 'success' : 'danger'}>
@@ -224,18 +236,25 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'id',
       key: 'id',
       width: 100,
+      sorter: (a, b) => a.id - b.id,
     },
     {
       title: '币种',
       dataIndex: 'cryptoType',
       key: 'cryptoType',
       width: 80,
+      sorter: (a, b) => a.cryptoType.localeCompare(b.cryptoType),
     },
     {
       title: '方向',
       dataIndex: 'direction',
       key: 'direction',
       width: 80,
+      filters: [
+        { text: '买入', value: 'buy' },
+        { text: '卖出', value: 'sell' },
+      ],
+      onFilter: (value, record) => record.direction === value,
       render: (direction) => (
         <Tag color={direction === 'buy' ? 'green' : 'red'}>
           {direction === 'buy' ? '买入' : '卖出'}
@@ -247,6 +266,11 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'orderType',
       key: 'orderType',
       width: 80,
+      filters: [
+        { text: '市价', value: 'market' },
+        { text: '限价', value: 'limit' },
+      ],
+      onFilter: (value, record) => record.orderType === value,
       render: (type) => (type === 'market' ? '市价' : '限价'),
     },
     {
@@ -254,6 +278,7 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'price',
       key: 'price',
       width: 120,
+      sorter: (a, b) => a.price - b.price,
       render: (price) => `$${price.toLocaleString()}`,
     },
     {
@@ -261,6 +286,7 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'amount',
       key: 'amount',
       width: 100,
+      sorter: (a, b) => a.amount - b.amount,
       render: (amount) => amount.toFixed(4),
     },
     {
@@ -268,6 +294,7 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'filledAmount',
       key: 'filledAmount',
       width: 100,
+      sorter: (a, b) => a.filledAmount - b.filledAmount,
       render: (filled) => filled.toFixed(4),
     },
     {
@@ -275,6 +302,12 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'status',
       key: 'status',
       width: 100,
+      filters: [
+        { text: '待成交', value: 'pending' },
+        { text: '已成交', value: 'completed' },
+        { text: '已取消', value: 'cancelled' },
+      ],
+      onFilter: (value, record) => record.status === value,
       render: (status) => {
         const statusMap = {
           pending: <Tag color="blue">待成交</Tag>,
@@ -289,6 +322,7 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 160,
+      sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
       render: (date) => dayjs(date).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
@@ -316,18 +350,25 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'id',
       key: 'id',
       width: 100,
+      sorter: (a, b) => a.id - b.id,
     },
     {
       title: '币种',
       dataIndex: 'cryptoType',
       key: 'cryptoType',
       width: 80,
+      sorter: (a, b) => a.cryptoType.localeCompare(b.cryptoType),
     },
     {
       title: '方向',
       dataIndex: 'direction',
       key: 'direction',
       width: 80,
+      filters: [
+        { text: '买入', value: 'buy' },
+        { text: '卖出', value: 'sell' },
+      ],
+      onFilter: (value, record) => record.direction === value,
       render: (direction) => (
         <Tag color={direction === 'buy' ? 'green' : 'red'}>
           {direction === 'buy' ? '买入' : '卖出'}
@@ -339,6 +380,7 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'price',
       key: 'price',
       width: 120,
+      sorter: (a, b) => a.price - b.price,
       render: (price) => `$${price.toLocaleString()}`,
     },
     {
@@ -346,6 +388,7 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'amount',
       key: 'amount',
       width: 100,
+      sorter: (a, b) => a.amount - b.amount,
       render: (amount) => amount.toFixed(4),
     },
     {
@@ -353,6 +396,7 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'total',
       key: 'total',
       width: 120,
+      sorter: (a, b) => a.total - b.total,
       render: (total) => `$${total.toLocaleString()}`,
     },
     {
@@ -360,6 +404,7 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'fee',
       key: 'fee',
       width: 100,
+      sorter: (a, b) => a.fee - b.fee,
       render: (fee) => `$${fee.toFixed(2)}`,
     },
     {
@@ -367,6 +412,7 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'profitLoss',
       key: 'profitLoss',
       width: 120,
+      sorter: (a, b) => (a.profitLoss || 0) - (b.profitLoss || 0),
       render: (pl) =>
         pl !== undefined ? (
           <Text type={pl >= 0 ? 'success' : 'danger'}>
@@ -381,6 +427,7 @@ const SimulatedTrade: React.FC = () => {
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 160,
+      sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
       render: (date) => dayjs(date).format('YYYY-MM-DD HH:mm:ss'),
     },
   ];
@@ -456,9 +503,9 @@ const SimulatedTrade: React.FC = () => {
         </Row>
 
         {/* 交易面板和持仓 */}
-        <Row gutter={16}>
+        <Row gutter={16} align="stretch">
           {/* 交易面板 */}
-          <Col xs={24} lg={8}>
+          <Col xs={24} lg={8} style={{ display: 'flex' }}>
             <Card
               title={
                 <Space>
@@ -466,6 +513,7 @@ const SimulatedTrade: React.FC = () => {
                   <span>交易面板</span>
                 </Space>
               }
+              style={{ width: '100%' }}
             >
               <Form form={form} layout="vertical" onFinish={handlePlaceOrder}>
                 {/* 买卖方向 */}
@@ -589,7 +637,7 @@ const SimulatedTrade: React.FC = () => {
           </Col>
 
           {/* 持仓列表 */}
-          <Col xs={24} lg={16}>
+          <Col xs={24} lg={16} style={{ display: 'flex' }}>
             <Card
               title={
                 <Space>
@@ -597,12 +645,19 @@ const SimulatedTrade: React.FC = () => {
                   <span>当前持仓</span>
                 </Space>
               }
+              style={{ width: '100%' }}
             >
               <Table
                 columns={positionColumns}
                 dataSource={positions.map(p => ({ ...p, key: p.cryptoType }))}
                 loading={loading}
-                pagination={false}
+                pagination={{
+                  pageSize: positionPageSize,
+                  showSizeChanger: true,
+                  pageSizeOptions: ['5', '10', '20'],
+                  showTotal: (total) => `共 ${total} 条`,
+                  onShowSizeChange: (_, size) => setPositionPageSize(size),
+                }}
                 scroll={{ x: 800 }}
                 size="small"
               />
@@ -632,7 +687,14 @@ const SimulatedTrade: React.FC = () => {
                     columns={orderColumns}
                     dataSource={pendingOrders.map(o => ({ ...o, key: o.id }))}
                     loading={loading}
-                    pagination={{ pageSize: 5 }}
+                    pagination={{
+                      pageSize: pendingOrderPageSize,
+                      showSizeChanger: true,
+                      pageSizeOptions: ['5', '10', '20'],
+                      showTotal: (total) => `共 ${total} 条`,
+                      showQuickJumper: true,
+                      onShowSizeChange: (_, size) => setPendingOrderPageSize(size),
+                    }}
                     scroll={{ x: 1100 }}
                     size="small"
                   />
@@ -651,7 +713,14 @@ const SimulatedTrade: React.FC = () => {
                     columns={orderColumns}
                     dataSource={completedOrders.map(o => ({ ...o, key: o.id }))}
                     loading={loading}
-                    pagination={{ pageSize: 5 }}
+                    pagination={{
+                      pageSize: completedOrderPageSize,
+                      showSizeChanger: true,
+                      pageSizeOptions: ['5', '10', '20'],
+                      showTotal: (total) => `共 ${total} 条`,
+                      showQuickJumper: true,
+                      onShowSizeChange: (_, size) => setCompletedOrderPageSize(size),
+                    }}
                     scroll={{ x: 1100 }}
                     size="small"
                   />
@@ -670,7 +739,14 @@ const SimulatedTrade: React.FC = () => {
                     columns={tradeRecordColumns}
                     dataSource={tradeRecords.map(r => ({ ...r, key: r.id }))}
                     loading={loading}
-                    pagination={{ pageSize: 10 }}
+                    pagination={{
+                      pageSize: tradeRecordPageSize,
+                      showSizeChanger: true,
+                      pageSizeOptions: ['5', '10', '20', '50'],
+                      showTotal: (total) => `共 ${total} 条`,
+                      showQuickJumper: true,
+                      onShowSizeChange: (_, size) => setTradeRecordPageSize(size),
+                    }}
                     scroll={{ x: 1100 }}
                     size="small"
                   />
