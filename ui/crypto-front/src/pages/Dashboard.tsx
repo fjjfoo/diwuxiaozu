@@ -20,7 +20,7 @@ const Dashboard: React.FC = () => {
         const response = await getSystemOverview();
         setOverviewData(response.data);
       } catch (error) {
-        console.error('获取系统概览数据失败:', error);
+        // 错误日志已移除
         // 出错时使用模拟数据
         setOverviewData({
           unreadMessageCount: 12,
@@ -43,14 +43,18 @@ const Dashboard: React.FC = () => {
           <Text type="secondary">欢迎使用AI驱动数字货币投资辅助系统</Text>
         </div>
 
-        <Row gutter={[16, 16]}>
+        <Row gutter={[24, 24]}>
           <Col xs={24} sm={12} md={8}>
-            <Card hoverable loading={loading}>
+            <Card 
+              hoverable 
+              loading={loading}
+              style={{ borderRadius: 8, boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)', transition: 'all 0.3s ease' }}
+            >
               <Statistic
                 title="未读消息"
                 value={overviewData?.unreadMessageCount || 0}
                 prefix={<BellOutlined />}
-                valueStyle={{ color: '#3f8600' }}
+                styles={{ content: { color: '#52c41a' } }}
               />
               <Divider style={{ margin: '12px 0' }} />
               <Link to="/messages">
@@ -62,12 +66,16 @@ const Dashboard: React.FC = () => {
           </Col>
 
           <Col xs={24} sm={12} md={8}>
-            <Card hoverable loading={loading}>
+            <Card 
+              hoverable 
+              loading={loading}
+              style={{ borderRadius: 8, boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)', transition: 'all 0.3s ease' }}
+            >
               <Statistic
                 title="待审核报告"
                 value={overviewData?.pendingReportCount || 0}
                 prefix={<FileTextOutlined />}
-                valueStyle={{ color: '#1890ff' }}
+                styles={{ content: { color: '#1890ff' } }}
               />
               <Divider style={{ margin: '12px 0' }} />
               <Link to="/reports">
@@ -79,12 +87,16 @@ const Dashboard: React.FC = () => {
           </Col>
 
           <Col xs={24} sm={12} md={8}>
-            <Card hoverable loading={loading}>
+            <Card 
+              hoverable 
+              loading={loading}
+              style={{ borderRadius: 8, boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)', transition: 'all 0.3s ease' }}
+            >
               <Statistic
                 title="总资产估值"
                 value={overviewData?.totalAssetValue || 0}
                 prefix={<DollarCircleOutlined />}
-                valueStyle={{ color: '#cf1322' }}
+                styles={{ content: { color: '#f5222d' } }}
                 formatter={(value) => `$${value.toLocaleString()}`}
               />
               <Divider style={{ margin: '12px 0' }} />
@@ -99,14 +111,14 @@ const Dashboard: React.FC = () => {
 
         <div>
           <Title level={3}>系统功能</Title>
-          <Row gutter={[16, 16]}>
+          <Row gutter={[24, 24]}>
             <Col xs={24} sm={12} md={6}>
-              <Card hoverable bodyStyle={{ textAlign: 'center' }}>
-                <Space direction="vertical" size="middle">
-                  <BellOutlined style={{ fontSize: '48px', color: '#1890ff' }} />
+              <Card hoverable className="feature-card">
+                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                  <BellOutlined style={{ color: '#1890ff' }} />
                   <Title level={4}>消息采集</Title>
                   <Text type="secondary">每日自动采集市场消息</Text>
-                  <Link to="/messages">
+                  <Link to="/messages" style={{ textDecoration: 'none' }}>
                     <Button type="primary" size="small">
                       查看
                     </Button>
@@ -116,9 +128,9 @@ const Dashboard: React.FC = () => {
             </Col>
 
             <Col xs={24} sm={12} md={6}>
-              <Card hoverable bodyStyle={{ textAlign: 'center' }}>
-                <Space direction="vertical" size="middle">
-                  <DollarCircleOutlined style={{ fontSize: '48px', color: '#52c41a' }} />
+              <Card hoverable className="feature-card">
+                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                  <DollarCircleOutlined style={{ color: '#52c41a' }} />
                   <Title level={4}>持仓管理</Title>
                   <Text type="secondary">实时监控资产配置</Text>
                   <Link to="/portfolio">
@@ -131,9 +143,9 @@ const Dashboard: React.FC = () => {
             </Col>
 
             <Col xs={24} sm={12} md={6}>
-              <Card hoverable bodyStyle={{ textAlign: 'center' }}>
-                <Space direction="vertical" size="middle">
-                  <FileTextOutlined style={{ fontSize: '48px', color: '#faad14' }} />
+              <Card hoverable className="feature-card">
+                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                  <FileTextOutlined style={{ color: '#faad14' }} />
                   <Title level={4}>AI分析</Title>
                   <Text type="secondary">智能生成投资建议</Text>
                   <Link to="/reports">
@@ -146,9 +158,9 @@ const Dashboard: React.FC = () => {
             </Col>
 
             <Col xs={24} sm={12} md={6}>
-              <Card hoverable bodyStyle={{ textAlign: 'center' }}>
-                <Space direction="vertical" size="middle">
-                  <BarChartOutlined style={{ fontSize: '48px', color: '#eb2f96' }} />
+              <Card hoverable className="feature-card">
+                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                  <BarChartOutlined style={{ color: '#eb2f96' }} />
                   <Title level={4}>价格排行</Title>
                   <Text type="secondary">实时查看数字货币价格排名</Text>
                   <Link to="/rankings">
@@ -161,9 +173,9 @@ const Dashboard: React.FC = () => {
             </Col>
 
             <Col xs={24} sm={12} md={6}>
-              <Card hoverable bodyStyle={{ textAlign: 'center' }}>
-                <Space direction="vertical" size="middle">
-                  <FireOutlined style={{ fontSize: '48px', color: '#fa541c' }} />
+              <Card hoverable className="feature-card">
+                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                  <FireOutlined style={{ color: '#fa541c' }} />
                   <Title level={4}>热门货币</Title>
                   <Text type="secondary">查看热门加密货币行情</Text>
                   <Link to="/hot-crypto">
@@ -176,9 +188,9 @@ const Dashboard: React.FC = () => {
             </Col>
 
             <Col xs={24} sm={12} md={6}>
-              <Card hoverable bodyStyle={{ textAlign: 'center' }}>
-                <Space direction="vertical" size="middle">
-                  <FileTextOutlined style={{ fontSize: '48px', color: '#722ed1' }} />
+              <Card hoverable className="feature-card">
+                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                  <FileTextOutlined style={{ color: '#722ed1' }} />
                   <Title level={4}>审核管理</Title>
                   <Text type="secondary">审核AI生成的建议</Text>
                   <Link to="/reports">

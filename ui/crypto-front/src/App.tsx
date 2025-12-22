@@ -1,7 +1,7 @@
 import { ConfigProvider, Layout, Menu } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import { Route, Routes, Link, useLocation } from 'react-router-dom';
-import { DashboardOutlined, MessageOutlined, DollarOutlined, FileTextOutlined, BarChartOutlined, FireOutlined, BookOutlined, TeamOutlined ,ExperimentOutlined} from '@ant-design/icons';
+import { DashboardOutlined, MessageOutlined, DollarOutlined, FileTextOutlined, BarChartOutlined, FireOutlined, ExperimentOutlined} from '@ant-design/icons';
 import Dashboard from './pages/Dashboard';
 import MessageList from './pages/MessageList';
 import PortfolioPage from './pages/PortfolioPage';
@@ -68,7 +68,12 @@ function App() {
       theme={{
         token: {
           colorPrimary: '#1677FF',
-          borderRadius: 4,
+          borderRadius: 8,
+          colorSuccess: '#52c41a',
+          colorWarning: '#faad14',
+          colorError: '#f5222d',
+          colorInfo: '#1890ff',
+          colorLink: '#1677FF',
         },
       }}
     >
@@ -76,24 +81,22 @@ function App() {
         <Sider
           breakpoint="lg"
           collapsedWidth="0"
-          onBreakpoint={(broken) => {
-            console.log(broken);
-          }}
-          onCollapse={(collapsed, type) => {
-            console.log(collapsed, type);
-          }}
         >
           <div className="logo" style={{ 
             height: 64, 
             margin: 16, 
-            background: 'rgba(255, 255, 255, 0.2)',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            borderRadius: 8,
             textAlign: 'center',
             lineHeight: '64px',
             color: '#fff',
             fontWeight: 'bold',
+            fontSize: 18,
             display: 'flex',
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            transition: 'all 0.3s ease'
           }}>
             AI投资助手
           </div>

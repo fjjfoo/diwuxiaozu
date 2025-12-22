@@ -1,42 +1,66 @@
 #root {
-  max-width: 1280px;
+  width: 100%;
+  height: 100vh;
+}
+
+/* 基础卡片样式 */
+.card {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 系统功能卡片样式 */
+.feature-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  padding: 24px 0;
+}
+
+.feature-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+}
+
+.feature-card .anticon {
+  font-size: 48px;
+  display: block;
   margin: 0 auto;
-  padding: 2rem;
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover .anticon {
+  transform: scale(1.1);
+}
+
+.feature-card .ant-typography {
+  margin: 0;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.feature-card .ant-typography-h4 {
+  font-size: 18px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.feature-card .ant-typography-secondary {
+  font-size: 14px;
+  padding: 0 16px;
+  display: block;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.feature-card .ant-btn {
+  margin: 0 auto;
+  display: block;
+  border-radius: 6px;
+  padding: 4px 16px;
+  transition: all 0.3s ease;
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+/* 布局容器 */
+.layout-container {
+  min-height: 100vh;
 }
