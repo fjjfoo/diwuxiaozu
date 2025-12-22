@@ -22,16 +22,9 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error) => {
-    // 处理常见错误
-    if (error.message.includes('timeout')) {
-      alert('请求超时，请检查后端服务是否正常！');
-    } else if (error.message.includes('404')) {
-      alert('接口不存在，请检查接口地址是否正确！');
-    } else if (error.message.includes('500')) {
-      alert('后端服务异常，请查看后端日志！');
-    } else {
-      alert('请求失败：' + error.message);
-    }
+    // 记录错误日志
+    console.error('请求错误:', error);
+    // 不在这里处理UI反馈，交给调用方处理
     return Promise.reject(error);
   }
 );

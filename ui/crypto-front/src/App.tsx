@@ -11,9 +11,6 @@ import MarketTrends from './pages/MarketTrends';
 import CryptoDetail from './pages/CryptoDetail';
 import HotCryptoPage from './pages/HotCryptoPage';
 import SimulatedTrade from './pages/SimulatedTrade';
-import StrategyListPage from './pages/StrategyListPage';
-import StrategyDetail from './pages/StrategyDetail';
-import CommunityPage from './pages/CommunityPage';
 import './App.css';
 
 const { Header, Content, Sider } = Layout;
@@ -63,16 +60,6 @@ function App() {
       icon: <ExperimentOutlined />,
       label: <Link to="/simulated-trade">模拟交易</Link>,
     },
-    {
-      key: '/social/strategies',
-      icon: <BookOutlined />,
-      label: <Link to="/social/strategies">投资策略</Link>,
-    },
-    {
-      key: '/social/community',
-      icon: <TeamOutlined />,
-      label: <Link to="/social/community">投资社区</Link>,
-    },
   ];
 
   return (
@@ -97,13 +84,16 @@ function App() {
           }}
         >
           <div className="logo" style={{ 
-            height: 32, 
+            height: 64, 
             margin: 16, 
             background: 'rgba(255, 255, 255, 0.2)',
             textAlign: 'center',
-            lineHeight: '32px',
+            lineHeight: '64px',
             color: '#fff',
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
           }}>
             AI投资助手
           </div>
@@ -140,9 +130,6 @@ function App() {
               <Route path="/reports" element={<ReportList />} />
               <Route path="/simulated-trade" element={<SimulatedTrade />} />
               <Route path="/crypto/:id" element={<CryptoDetail />} />
-              <Route path="/strategies/:id" element={<StrategyDetail />} />
-              <Route path="/social/strategies" element={<StrategyListPage />} />
-              <Route path="/social/community" element={<CommunityPage />} />
             </Routes>
           </Content>
         </Layout>

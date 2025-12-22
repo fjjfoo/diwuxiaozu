@@ -1,60 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Typography, Row, Col, Space, Statistic, Tag, Table, Select } from 'antd';
+import { Card, Typography, Row, Col, Space, Statistic, Tag, Table, Select, message } from 'antd';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
 import ReactECharts from 'echarts-for-react';
 import dayjs from 'dayjs';
+import { getMarketTrendsData } from '../api/marketTrends';
+import type {
+  MarketOverview,
+  PriceHistory,
+  TechnicalIndicator,
+  MarketSentiment,
+  NewsSummary
+} from '../api/marketTrends';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
-
-// 市场概览数据类型
-interface MarketOverview {
-  totalMarketCap: number;
-  tradingVolume24h: number;
-  btcDominance: number;
-  cryptoPerformance: Array<{
-    symbol: string;
-    price: number;
-    change24h: number;
-  }>;
-}
-
-// 价格历史数据类型
-interface PriceHistory {
-  symbol: string;
-  timestamps: number[];
-  prices: number[];
-}
-
-// 技术指标类型
-interface TechnicalIndicator {
-  name: string;
-  value: number;
-  status: 'bullish' | 'bearish' | 'neutral';
-  description: string;
-}
-
-// 市场情绪数据类型
-interface MarketSentiment {
-  overallSentiment: 'positive' | 'negative' | 'neutral';
-  score: number;
-  analysis: string;
-  newsCount: {
-    positive: number;
-    negative: number;
-    neutral: number;
-  };
-}
-
-// 新闻摘要类型
-interface NewsSummary {
-  id: number;
-  title: string;
-  source: string;
-  publishedAt: string;
-  sentiment: 'positive' | 'negative' | 'neutral';
-  impact: 'high' | 'medium' | 'low';
-}
 
 const MarketTrends: React.FC = () => {
   // 状态管理
@@ -67,75 +26,49 @@ const MarketTrends: React.FC = () => {
   const [newsData, setNewsData] = useState<NewsSummary[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   
-  // 模拟数据
+  // 从 Dify API 获取市场趋势数据
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setLoading(true);
-    
-    setTimeout(() => {
-      // 模拟市场概览数据
-      setMarketData({
-        totalMarketCap: 1234567890123,
-        tradingVolume24h: 456789012345,
-        btcDominance: 52.34,
-        cryptoPerformance: [
-          { symbol: 'BTC', price: 45678.90, change24h: 2.34 },
-          { symbol: 'ETH', price: 3456.78, change24h: 1.23 },
-          { symbol: 'BNB', price: 456.78, change24h: -0.56 },
-          { symbol: 'SOL', price: 123.45, change24h: 5.67 },
-        ],
-      });
-      
-      // 模拟价格历史数据
-      const now = Date.now();
-      const timestamps: number[] = [];
-      const prices: number[] = [];
-      
-      const basePrice = selectedCrypto === 'BTC' ? 45000 : selectedCrypto === 'ETH' ? 3400 : selectedCrypto === 'BNB' ? 450 : 120;
-      
-      for (let i = 0; i < 100; i++) {
-        timestamps.push(now - (100 - i) * 3600000); // 过去100小时
-        prices.push(basePrice * (1 + Math.random() * 0.1 - 0.05)); // 随机波动5%
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const data = await getMarketTrendsData({
+          symbol: selectedCrypto,
+          timeRange: timeRange,
+        });
+        
+        setMarketData(data.marketOverview);
+        setPriceHistoryData(data.priceHistory);
+        setTechnicalData(data.technicalIndicators);
+        setSentimentData(data.marketSentiment);
+        setNewsData(data.newsSummaries);
+        
+        // 只有当有实际数据时才显示成功消息
+        if (Object.values(data).some(item => 
+          item && (Array.isArray(item) ? item.length > 0 : Object.keys(item).length > 0)
+        )) {
+          message.success('市场趋势数据加载成功');
+        }
+      } catch (error: any) {
+        console.error('获取市场趋势数据失败:', error);
+        
+        // 针对不同错误类型提供更具体的提示
+        if (error.message?.includes('timeout')) {
+          message.error('数据请求超时，请检查网络连接');
+        } else if (error.response?.status === 401) {
+          message.error('API授权失败，请检查配置');
+        } else if (error.response?.status === 404) {
+          message.error('请求的资源不存在');
+        } else if (error.response?.status >= 500) {
+          message.error('服务器错误，请稍后重试');
+        } else {
+          message.error('获取市场趋势数据失败，请稍后重试');
+        }
+      } finally {
+        setLoading(false);
       }
-      
-      setPriceHistoryData({
-        symbol: selectedCrypto,
-        timestamps,
-        prices,
-      });
-      
-      // 模拟技术指标数据
-      setTechnicalData([
-        { name: 'RSI', value: 65.23, status: 'bullish', description: '相对强弱指标显示看涨信号' },
-        { name: 'MACD', value: 123.45, status: 'bullish', description: '平滑异同移动平均线显示买入信号' },
-        { name: 'MA50', value: 44567.89, status: 'neutral', description: '50日均线呈水平状态' },
-        { name: 'MA200', value: 42345.67, status: 'bullish', description: '200日均线呈上升趋势' },
-        { name: 'Bollinger Bands', value: 2.34, status: 'neutral', description: '布林带宽度正常' },
-      ]);
-      
-      // 模拟市场情绪数据
-      setSentimentData({
-        overallSentiment: 'positive',
-        score: 78.5,
-        analysis: '当前市场情绪积极，主要受机构资金流入和技术面突破影响。多数投资者持乐观态度。',
-        newsCount: {
-          positive: 45,
-          negative: 12,
-          neutral: 33,
-        },
-      });
-      
-      // 模拟新闻摘要数据
-      setNewsData([
-        { id: 1, title: '比特币突破50000美元关口，创今年新高', source: 'CoinDesk', publishedAt: dayjs().subtract(2, 'hour').toISOString(), sentiment: 'positive', impact: 'high' },
-        { id: 2, title: '以太坊2.0升级进展顺利，预计年底完成', source: 'CryptoSlate', publishedAt: dayjs().subtract(5, 'hour').toISOString(), sentiment: 'positive', impact: 'medium' },
-        { id: 3, title: 'SEC推迟比特币ETF决议，市场反应平淡', source: 'Bloomberg', publishedAt: dayjs().subtract(8, 'hour').toISOString(), sentiment: 'neutral', impact: 'high' },
-        { id: 4, title: '大型机构继续增持比特币，资产管理规模突破100亿美元', source: 'The Block', publishedAt: dayjs().subtract(12, 'hour').toISOString(), sentiment: 'positive', impact: 'medium' },
-        { id: 5, title: '监管机构加强对加密货币交易所的监管力度', source: 'Reuters', publishedAt: dayjs().subtract(24, 'hour').toISOString(), sentiment: 'negative', impact: 'medium' },
-      ]);
-      
-      setLoading(false);
-    }, 1000);
+    };
+    
+    fetchData();
   }, [selectedCrypto, timeRange]);
   
   // 配置价格走势图
@@ -355,26 +288,32 @@ const MarketTrends: React.FC = () => {
             <div>
               <Title level={5}>主要货币表现</Title>
               <Row gutter={[16, 16]}>
-                {marketData?.cryptoPerformance.map((crypto) => (
-                  <Col key={crypto.symbol} xs={24} sm={8} md={6}>
-                    <Card size="small" hoverable>
-                      <Space direction="vertical" size="small" style={{ width: '100%' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Text strong>{crypto.symbol}</Text>
-                          <Tag color={crypto.change24h >= 0 ? 'green' : 'red'}>
-                            {crypto.change24h >= 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
-                            {Math.abs(crypto.change24h).toFixed(2)}%
-                          </Tag>
-                        </div>
-                        <Statistic
-                          value={crypto.price}
-                          formatter={(value) => `$${value.toLocaleString()}`}
-                          valueStyle={{ fontSize: '18px', fontWeight: 'bold' }}
-                        />
-                      </Space>
-                    </Card>
+                {marketData?.cryptoPerformance && marketData.cryptoPerformance.length > 0 ? (
+                  marketData.cryptoPerformance.map((crypto) => (
+                    <Col key={crypto.symbol} xs={24} sm={8} md={6}>
+                      <Card size="small" hoverable>
+                        <Space direction="vertical" size="small" style={{ width: '100%' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Text strong>{crypto.symbol}</Text>
+                            <Tag color={crypto.change24h >= 0 ? 'green' : 'red'}>
+                              {crypto.change24h >= 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+                              {Math.abs(crypto.change24h).toFixed(2)}%
+                            </Tag>
+                          </div>
+                          <Statistic
+                            value={crypto.price}
+                            formatter={(value) => `$${value.toLocaleString()}`}
+                            valueStyle={{ fontSize: '18px', fontWeight: 'bold' }}
+                          />
+                        </Space>
+                      </Card>
+                    </Col>
+                  ))
+                ) : (
+                  <Col span={24} style={{ textAlign: 'center', padding: '20px' }}>
+                    <Text type="secondary">暂无货币表现数据</Text>
                   </Col>
-                ))}
+                )}
               </Row>
             </div>
           </Space>
@@ -424,12 +363,18 @@ const MarketTrends: React.FC = () => {
           {/* 技术指标 */}
           <Col xs={24} md={12}>
             <Card title="技术指标分析" loading={loading}>
-              <Table
-                columns={technicalColumns}
-                dataSource={technicalData}
-                pagination={false}
-                rowKey="name"
-              />
+              {technicalData.length > 0 ? (
+                <Table
+                  columns={technicalColumns}
+                  dataSource={technicalData}
+                  pagination={false}
+                  rowKey="name"
+                />
+              ) : (
+                <div style={{ textAlign: 'center', padding: '20px' }}>
+                  <Text type="secondary">暂无技术指标数据</Text>
+                </div>
+              )}
             </Card>
           </Col>
           
@@ -503,12 +448,18 @@ const MarketTrends: React.FC = () => {
         
         {/* 相关新闻 */}
         <Card title="相关新闻摘要" loading={loading}>
-          <Table
-            columns={newsColumns}
-            dataSource={newsData}
-            pagination={{ pageSize: 5 }}
-            rowKey="id"
-          />
+          {newsData.length > 0 ? (
+            <Table
+              columns={newsColumns}
+              dataSource={newsData}
+              pagination={{ pageSize: 5 }}
+              rowKey="id"
+            />
+          ) : (
+            <div style={{ textAlign: 'center', padding: '20px' }}>
+              <Text type="secondary">暂无相关新闻数据</Text>
+            </div>
+          )}
         </Card>
       </Space>
     </div>
