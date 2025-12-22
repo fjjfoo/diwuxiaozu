@@ -1,7 +1,7 @@
 import { ConfigProvider, Layout, Menu } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import { Route, Routes, Link, useLocation } from 'react-router-dom';
-import { DashboardOutlined, MessageOutlined, DollarOutlined, FileTextOutlined, BarChartOutlined, FireOutlined } from '@ant-design/icons';
+import { DashboardOutlined, MessageOutlined, DollarOutlined, FileTextOutlined, BarChartOutlined, FireOutlined, BookOutlined, TeamOutlined } from '@ant-design/icons';
 import Dashboard from './pages/Dashboard';
 import MessageList from './pages/MessageList';
 import PortfolioPage from './pages/PortfolioPage';
@@ -10,6 +10,9 @@ import PriceRankings from './pages/PriceRankings';
 import MarketTrends from './pages/MarketTrends';
 import CryptoDetail from './pages/CryptoDetail';
 import HotCryptoPage from './pages/HotCryptoPage';
+import StrategyListPage from './pages/StrategyListPage';
+import StrategyDetail from './pages/StrategyDetail';
+import CommunityPage from './pages/CommunityPage';
 import './App.css';
 
 const { Header, Content, Sider } = Layout;
@@ -53,6 +56,16 @@ function App() {
       key: '/reports',
       icon: <FileTextOutlined />,
       label: <Link to="/reports">建议报告</Link>,
+    },
+    {
+      key: '/social/strategies',
+      icon: <BookOutlined />,
+      label: <Link to="/social/strategies">投资策略</Link>,
+    },
+    {
+      key: '/social/community',
+      icon: <TeamOutlined />,
+      label: <Link to="/social/community">投资社区</Link>,
     },
   ];
 
@@ -120,6 +133,9 @@ function App() {
               <Route path="/hot-crypto" element={<HotCryptoPage />} />
               <Route path="/reports" element={<ReportList />} />
               <Route path="/crypto/:id" element={<CryptoDetail />} />
+              <Route path="/strategies/:id" element={<StrategyDetail />} />
+              <Route path="/social/strategies" element={<StrategyListPage />} />
+              <Route path="/social/community" element={<CommunityPage />} />
             </Routes>
           </Content>
         </Layout>
