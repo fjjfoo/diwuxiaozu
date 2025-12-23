@@ -1,10 +1,12 @@
 package com.crypto.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty; // 导入注解
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Data
 @Entity
@@ -47,6 +49,8 @@ public class CryptoCurrency {
     private BigDecimal marketCap;
 
     @Column(nullable = false)
+    @JsonProperty(value = "update_time") // 对应 Dify 输出的 update_time
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS") // 匹配 Dify 输出的时间格式
     private LocalDateTime updateTime;
 
     public Long getId() {

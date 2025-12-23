@@ -20,7 +20,7 @@ public class Report {
     @Column(name = "message_count")
     private Integer messageCount;
     
-    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ReportSuggestion> suggestions;
     
     // Getters and Setters
@@ -72,3 +72,4 @@ public class Report {
         this.suggestions = suggestions;
     }
 }
+

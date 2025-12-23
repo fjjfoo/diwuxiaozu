@@ -3,16 +3,20 @@ package com.crypto.service.impl;
 import com.crypto.entity.Message;
 import com.crypto.entity.PortfolioItem;
 import com.crypto.entity.Report;
+import com.crypto.entity.ReportSuggestion;
 import com.crypto.repository.MessageRepository;
 import com.crypto.repository.PortfolioItemRepository;
 import com.crypto.repository.ReportRepository;
+import com.crypto.repository.ReportSuggestionRepository;
 import com.crypto.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +30,9 @@ public class ReportServiceImpl implements ReportService {
     
     @Autowired
     private PortfolioItemRepository portfolioItemRepository;
+    
+    @Autowired
+    private ReportSuggestionRepository reportSuggestionRepository;
     
     @Override
     public Map<String, Object> getReports(String status, int page, int size) {
@@ -54,7 +61,7 @@ public class ReportServiceImpl implements ReportService {
         
         return result;
     }
-    
+
     @Override
     public Map<String, Object> getReportById(Long id) {
         // 获取报告基本信息
@@ -118,5 +125,80 @@ public class ReportServiceImpl implements ReportService {
             report.setStatus(status);
             reportRepository.save(report);
         }
+    }
+    
+    @Override
+    public Map<String, Object> createReport(Map<String, Object> reportData) {
+        Report report = new Report();
+        report.setTitle((String) reportData.get("title"));
+        report.setStatus(reportData.get("status") != null ? (String) reportData.get("status") : "pending");
+        report.setCreatedAt(LocalDateTime.now());
+        report.setMessageCount(0);
+        
+        Report savedReport = reportRepository.save(report);
+        
+        // 构造响应
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", savedReport.getId());
+        response.put("title", savedReport.getTitle());
+        response.put("status", savedReport.getStatus());
+        response.put("createdAt", savedReport.getCreatedAt());
+        response.put("messageCount", savedReport.getMessageCount());
+        response.put("success", true);
+        response.put("message", "报告创建成功");
+        
+        return response;
+    }
+    
+    // ReportSuggestion相关方法实现
+    @Override
+    public List<ReportSuggestion> getSuggestionsByReportId(Long reportId) {
+        return reportSuggestionRepository.findByReportId(reportId);
+    }
+    
+    @Override
+    public ReportSuggestion addSuggestionToReport(Long reportId, Map<String, Object> suggestionData) {
+        Report report = reportRepository.findById(reportId).orElse(null);
+        if (report == null) {
+            return null;
+        }
+        
+        ReportSuggestion suggestion = new ReportSuggestion();
+        suggestion.setCryptoType((String) suggestionData.get("cryptoType"));
+        suggestion.setCurrentPercentage((Double) suggestionData.get("currentPercentage"));
+        suggestion.setSuggestedPercentage((Double) suggestionData.get("suggestedPercentage"));
+        suggestion.setReason((String) suggestionData.get("reason"));
+        suggestion.setReport(report);
+        
+        return reportSuggestionRepository.save(suggestion);
+    }
+    
+    @Override
+    public ReportSuggestion updateSuggestion(Long suggestionId, Map<String, Object> suggestionData) {
+        Optional<ReportSuggestion> optionalSuggestion = reportSuggestionRepository.findById(suggestionId);
+        if (optionalSuggestion.isPresent()) {
+            ReportSuggestion suggestion = optionalSuggestion.get();
+            
+            if (suggestionData.containsKey("cryptoType")) {
+                suggestion.setCryptoType((String) suggestionData.get("cryptoType"));
+            }
+            if (suggestionData.containsKey("currentPercentage")) {
+                suggestion.setCurrentPercentage((Double) suggestionData.get("currentPercentage"));
+            }
+            if (suggestionData.containsKey("suggestedPercentage")) {
+                suggestion.setSuggestedPercentage((Double) suggestionData.get("suggestedPercentage"));
+            }
+            if (suggestionData.containsKey("reason")) {
+                suggestion.setReason((String) suggestionData.get("reason"));
+            }
+            
+            return reportSuggestionRepository.save(suggestion);
+        }
+        return null;
+    }
+    
+    @Override
+    public void deleteSuggestion(Long suggestionId) {
+        reportSuggestionRepository.deleteById(suggestionId);
     }
 }

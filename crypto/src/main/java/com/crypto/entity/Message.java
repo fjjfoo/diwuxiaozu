@@ -1,5 +1,7 @@
 package com.crypto.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -11,6 +13,7 @@ public class Message {
     private Long id;
     
     @Column(name = "crypto_type")
+    @JsonProperty("crypto_type")
     private String cryptoType;
     
     private String content;
@@ -18,12 +21,16 @@ public class Message {
     private String source;
     
     @Column(name = "source_url")
+    @JsonProperty("source_url")
     private String sourceUrl;
     
     @Column(name = "created_at")
+    @JsonProperty("created_at")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS")
     private LocalDateTime createdAt;
     
     @Column(name = "is_read")
+    @JsonProperty("is_read")
     private Boolean isRead;
     
     // Getters and Setters

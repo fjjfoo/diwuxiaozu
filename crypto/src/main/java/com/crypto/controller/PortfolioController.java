@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +44,7 @@ public class PortfolioController {
         return ResponseEntity.ok(result);
     }
     
+<<<<<<< HEAD
     /**
      * AI专用持仓查询接口
      * 支持Dify智能体直接调用或后端中转调用
@@ -54,3 +56,34 @@ public class PortfolioController {
         return ResponseEntity.ok(result);
     }
 }
+=======
+    // 添加初始化测试数据的接口
+    @PostMapping("/init-test-data")
+    public ResponseEntity<Map<String, Object>> initTestData() {
+        // 创建测试数据
+        List<PortfolioItem> testItems = new ArrayList<>();
+        
+        PortfolioItem btc = new PortfolioItem();
+        btc.setCryptoType("BTC");
+        btc.setQuantity(1.5);
+        btc.setPrice(45000.0);
+        testItems.add(btc);
+        
+        PortfolioItem eth = new PortfolioItem();
+        eth.setCryptoType("ETH");
+        eth.setQuantity(10.0);
+        eth.setPrice(3000.0);
+        testItems.add(eth);
+        
+        PortfolioItem sol = new PortfolioItem();
+        sol.setCryptoType("SOL");
+        sol.setQuantity(100.0);
+        sol.setPrice(75.0);
+        testItems.add(sol);
+        
+        // 调用updatePortfolio方法保存测试数据
+        Map<String, Object> result = portfolioService.updatePortfolio(testItems);
+        return ResponseEntity.ok(result);
+    }
+}
+>>>>>>> 010f0c3 (dify联调)

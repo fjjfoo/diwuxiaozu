@@ -64,4 +64,32 @@ public class MessageServiceImpl implements MessageService {
             messageRepository.save(message);
         }
     }
+
+    @Override
+    public Message saveMessage(Message message) {
+        // 设置默认值
+        if (message.getCreatedAt() == null) {
+            message.setCreatedAt(LocalDateTime.now());
+        }
+        if (message.getIsRead() == null) {
+            message.setIsRead(false);
+        }
+        return messageRepository.save(message);
+    }
+
+    @Override
+    public List<Message> saveMessages(List<Message> messages) {
+        // 设置默认值
+        LocalDateTime now = LocalDateTime.now();
+        for (Message message : messages) {
+            if (message.getCreatedAt() == null) {
+                message.setCreatedAt(now);
+            }
+            if (message.getIsRead() == null) {
+                message.setIsRead(false);
+            }
+        }
+        return messageRepository.saveAll(messages);
+    }
 }
+

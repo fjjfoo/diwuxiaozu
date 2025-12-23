@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -25,7 +26,6 @@ public class MessageController {
             @RequestParam(required = false) LocalDateTime endDate,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
-        
         Map<String, Object> messages = messageService.getMessages(cryptoType, sentiment, startDate, endDate, page, size);
         return ResponseEntity.ok(messages);
     }
@@ -48,5 +48,42 @@ public class MessageController {
         response.put("message", "消息已标记为已读");
         
         return ResponseEntity.ok(response);
+    }
+
+    // 新增：保存单条消息（用于Dify测试）
+    @PostMapping
+    public ResponseEntity<Map<String, Object>> saveMessage(@RequestBody Message message) {
+        try {
+            Message savedMessage = messageService.saveMessage(message);
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "message", "消息保存成功",
+                    "data", savedMessage
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "消息保存失败: " + e.getMessage()
+            ));
+        }
+    }
+
+    // 新增：批量保存消息（用于Dify测试）
+    @PostMapping("/batch-save")
+    public ResponseEntity<Map<String, Object>> saveMessages(@RequestBody List<Message> messages) {
+        try {
+            List<Message> savedMessages = messageService.saveMessages(messages);
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "message", "消息批量保存成功",
+                    "data", savedMessages,
+                    "count", savedMessages.size()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "消息批量保存失败: " + e.getMessage()
+            ));
+        }
     }
 }

@@ -43,4 +43,18 @@ public class SystemServiceImpl implements SystemService {
         
         return overview;
     }
+    
+    @Override
+    public Map<String, Object> saveSystemSettings(Map<String, Object> settings) {
+        // 模拟保存系统设置的逻辑
+        // 在实际应用中，这里应该将设置保存到数据库或配置文件中
+        
+        // 构造响应
+        Map<String, Object> result = new HashMap<>();
+        result.put("success", true);
+        result.put("message", "系统设置保存成功");
+        result.put("settings", settings);
+        
+        return result;
+    }
 }
