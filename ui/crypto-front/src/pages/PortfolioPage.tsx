@@ -126,11 +126,7 @@ const PortfolioPage: React.FC = () => {
         if (!params || params.length === 0) return '';
         let result = params[0].axisValue + '<br/>';
         params.forEach((param: EChartsTooltipParam) => {
-<<<<<<< HEAD
-          result += `${param.marker}${param.seriesName}: $${(param.value || 0).toLocaleString()}<br/>`;
-=======
           result += `${param.marker}${param.seriesName}: $${param.value?.toLocaleString() || 0}<br/>`;
->>>>>>> 010f0c3 (dify联调)
         });
         return result;
       },
@@ -195,42 +191,26 @@ const PortfolioPage: React.FC = () => {
       title: '数量',
       dataIndex: 'amount',
       key: 'amount',
-<<<<<<< HEAD
-      render: (amount) => amount ? amount.toFixed(2) : '0.00',
-=======
       render: (amount) => (amount || 0).toFixed(2), // 修复空值toFixed报错
->>>>>>> 010f0c3 (dify联调)
     },
     {
       title: '当前价格',
       dataIndex: 'price',
       key: 'price',
-<<<<<<< HEAD
-      render: (price) => price ? `$${price.toLocaleString()}` : '$0.00',
-=======
       render: (price) => `$${(price || 0).toLocaleString()}`,
->>>>>>> 010f0c3 (dify联调)
     },
     {
       title: '市值',
       dataIndex: 'value',
       key: 'value',
-<<<<<<< HEAD
-      render: (value) => value ? `$${value.toLocaleString()}` : '$0.00',
-=======
       render: (value) => `$${(value || 0).toLocaleString()}`,
->>>>>>> 010f0c3 (dify联调)
       sorter: (a, b) => (a.value || 0) - (b.value || 0),
     },
     {
       title: '占比',
       dataIndex: 'percentage',
       key: 'percentage',
-<<<<<<< HEAD
-      render: (percentage) => percentage ? `${percentage.toFixed(2)}%` : '0.00%',
-=======
       render: (percentage) => `${(percentage || 0).toFixed(2)}%`,
->>>>>>> 010f0c3 (dify联调)
     },
     {
       title: '更新时间',
@@ -248,10 +228,6 @@ const PortfolioPage: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-<<<<<<< HEAD
-=======
-      {/* 替换direction为orientation，修复antd警告 */}
->>>>>>> 010f0c3 (dify联调)
       <Space orientation="vertical" size="large" style={{ width: '100%' }}>
         <div>
           <Title level={2}>持仓数据</Title>
@@ -260,10 +236,6 @@ const PortfolioPage: React.FC = () => {
 
         {/* 总资产概览 */}
         <Card>
-<<<<<<< HEAD
-=======
-          {/* 替换direction为orientation */}
->>>>>>> 010f0c3 (dify联调)
           <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
